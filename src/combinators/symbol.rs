@@ -3,7 +3,7 @@ use std::fmt::Display;
 use crate::{
     cursor::Cursor,
     input::Input,
-    matcher::{MatchResult, Matcher},
+    matcher::{MatchResult, Matcher, MatcherBase},
 };
 
 /// Minimal matcher that trys to match exactly one symbol.
@@ -37,6 +37,8 @@ where
         }
     }
 }
+
+impl<S> MatcherBase for Symbol<S> {}
 
 /// Function to create a symbol matcher.
 pub fn symbol<S>(symbol: S) -> Symbol<S> {

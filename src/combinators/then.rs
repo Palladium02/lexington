@@ -1,7 +1,7 @@
 use crate::{
     cursor::Cursor,
     input::Input,
-    matcher::{MatchResult, Matcher},
+    matcher::{MatchResult, Matcher, MatcherBase},
 };
 
 /// Chaining matcher that succeeds if left and right succeed in order.
@@ -27,3 +27,5 @@ impl<I: Input, A: Matcher<I>, B: Matcher<I>> Matcher<I> for Then<A, B> {
         }
     }
 }
+
+impl<A, B> MatcherBase for Then<A, B> {}

@@ -1,7 +1,7 @@
 use crate::{
     cursor::Cursor,
     input::Input,
-    matcher::{MatchResult, Matcher},
+    matcher::{MatchResult, Matcher, MatcherBase},
 };
 
 /// A trait that enables the usage of just over a chain of .then calls by converting
@@ -46,6 +46,8 @@ impl<I: Input, S: Clone + IntoSymbols<I::Symbol>> Matcher<I> for Just<S> {
         MatchResult::Matched(cursor)
     }
 }
+
+impl<S> MatcherBase for Just<S> {}
 
 pub fn just<S>(s: S) -> Just<S> {
     Just(s)

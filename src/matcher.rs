@@ -31,6 +31,8 @@ pub trait Matcher<I: Input> {
     fn try_match<'a>(&self, cursor: Cursor<'a, I>) -> MatchResult<'a, I>;
 }
 
+pub trait MatcherBase {}
+
 pub trait MatcherExt: Sized + 'static {
     /// Creates a matcher that succeeds if the two underlying matchers succeed in order.
     fn then<A>(self, other: A) -> Then<Self, A> {
@@ -56,7 +58,7 @@ pub trait MatcherExt: Sized + 'static {
     fn skip<K: Copy>(self) -> Rule<Self, K>;
 }
 
-impl<M> MatcherExt for M
+impl<M: MatcherBase> MatcherExt for M
 where
     M: Sized + 'static,
 {

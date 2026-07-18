@@ -1,7 +1,7 @@
 use crate::{
-    cursor::{self, Cursor},
+    cursor::Cursor,
     input::Input,
-    matcher::{self, MatchResult, Matcher},
+    matcher::{self, MatchResult, Matcher, MatcherBase},
 };
 
 pub struct Predicate<P>(P);
@@ -30,6 +30,8 @@ impl<I: Input, P: Fn(I::Symbol) -> bool> Matcher<I> for Predicate<P> {
         }
     }
 }
+
+impl<P> MatcherBase for Predicate<P> {}
 
 pub fn predicate<P>(predicate: P) -> Predicate<P> {
     Predicate(predicate)
