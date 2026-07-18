@@ -22,6 +22,6 @@ fn main() {
         .rule("space", symbol(' ').skip())
         .build(&Utf8("let x = 42;"));
 
-    let events = lexer.collect::<Vec<Event<Kind>>>();
+    let events = lexer.collect::<Vec<_>>();
     println!("{events:?}")
 }
