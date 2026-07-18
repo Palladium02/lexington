@@ -32,8 +32,12 @@ pub struct Token<K: Debug> {
     span: Span,
 }
 
-impl<K: Debug> Token<K> {
+impl<K: Debug + Copy> Token<K> {
     pub fn new(kind: K, span: Span) -> Self {
         Self { kind, span }
+    }
+
+    pub fn kind(&self) -> K {
+        self.kind
     }
 }
