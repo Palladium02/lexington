@@ -9,7 +9,7 @@ use std::fmt::Debug;
 /// ```
 ///
 /// This matches Rust's range conventions and allows empty spans.
-#[derive(Debug)]
+#[derive(Debug, Clone, Copy)]
 pub struct Span {
     start: usize,
     end: usize,
@@ -18,6 +18,14 @@ pub struct Span {
 impl Span {
     pub fn new(start: usize, end: usize) -> Self {
         Self { start, end }
+    }
+
+    pub fn start(&self) -> usize {
+        self.start
+    }
+
+    pub fn end(&self) -> usize {
+        self.end
     }
 }
 
@@ -39,5 +47,9 @@ impl<K: Debug + Copy> Token<K> {
 
     pub fn kind(&self) -> K {
         self.kind
+    }
+
+    pub fn span(&self) -> Span {
+        self.span
     }
 }
