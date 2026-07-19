@@ -7,7 +7,7 @@ use crate::{
 pub struct Predicate<P>(P);
 
 impl<P> Predicate<P> {
-    pub fn new(predicate: P) -> Self {
+    pub const fn new(predicate: P) -> Self {
         Self(predicate)
     }
 }
@@ -21,7 +21,7 @@ impl<I: Input, P: Fn(I::Symbol) -> bool> Matcher<I> for Predicate<P> {
             }
             Some(symbol) => {
                 cursor.advance();
-                MatchResult::Failed(cursor, format!("Predicate failed on symbol `{}`.", symbol))
+                MatchResult::Failed(cursor, format!("Predicate failed on symbol `{symbol}`."))
             }
             None => {
                 cursor.advance();
@@ -33,6 +33,6 @@ impl<I: Input, P: Fn(I::Symbol) -> bool> Matcher<I> for Predicate<P> {
 
 impl<P> MatcherBase for Predicate<P> {}
 
-pub fn predicate<P>(predicate: P) -> Predicate<P> {
+pub const fn predicate<P>(predicate: P) -> Predicate<P> {
     Predicate(predicate)
 }

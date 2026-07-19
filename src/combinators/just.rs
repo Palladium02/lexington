@@ -31,10 +31,7 @@ impl<I: Input, S: Clone + IntoSymbols<I::Symbol>> Matcher<I> for Just<S> {
                     cursor.advance();
                     return MatchResult::Failed(
                         cursor,
-                        format!(
-                            "Unexpected symbol `{}`, expected `{}` instead.",
-                            actual, expected
-                        ),
+                        format!("Unexpected symbol `{actual}`, expected `{expected}` instead."),
                     );
                 }
                 None => {
@@ -49,6 +46,6 @@ impl<I: Input, S: Clone + IntoSymbols<I::Symbol>> Matcher<I> for Just<S> {
 
 impl<S> MatcherBase for Just<S> {}
 
-pub fn just<S>(s: S) -> Just<S> {
+pub const fn just<S>(s: S) -> Just<S> {
     Just(s)
 }

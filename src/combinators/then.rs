@@ -11,7 +11,7 @@ pub struct Then<A, B> {
 }
 
 impl<A, B> Then<A, B> {
-    pub fn new(left: A, right: B) -> Self {
+    pub const fn new(left: A, right: B) -> Self {
         Self { left, right }
     }
 }

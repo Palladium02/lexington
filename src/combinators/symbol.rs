@@ -41,6 +41,6 @@ where
 impl<S> MatcherBase for Symbol<S> {}
 
 /// Function to create a symbol matcher.
-pub fn symbol<S>(symbol: S) -> Symbol<S> {
-    return Symbol(symbol);
+pub const fn symbol<S>(symbol: S) -> Symbol<S> {
+    Symbol(symbol)
 }

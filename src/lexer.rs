@@ -33,21 +33,27 @@ pub struct Lexer<'a, I: Input, K: Copy> {
 }
 
 impl<'a, I: Input, K: Copy> Lexer<'a, I, K> {
-    pub fn new(rules: Vec<ErasedRule<I, K>>, cursor: Cursor<'a, I>, recovery: Recovery) -> Self {
+    #[must_use]
+    pub const fn new(
+        rules: Vec<ErasedRule<I, K>>,
+        cursor: Cursor<'a, I>,
+        recovery: Recovery,
+    ) -> Self {
         Self {
-            rules,
             cursor,
+            rules,
             recovery,
         }
     }
 
     /// Returns an builder instance.
-    pub fn builder() -> LexerBuilder<I, K> {
+    #[must_use]
+    pub const fn builder() -> LexerBuilder<I, K> {
         LexerBuilder::new()
     }
 }
 
-impl<'a, I: Input, K: Debug + Copy> Iterator for Lexer<'a, I, K> {
+impl<I: Input, K: Debug + Copy> Iterator for Lexer<'_, I, K> {
     type Item = Event<K>;
 
     fn next(&mut self) -> Option<Self::Item> {
@@ -57,7 +63,7 @@ impl<'a, I: Input, K: Debug + Copy> Iterator for Lexer<'a, I, K> {
 
         let start = self.cursor;
         let mut best_match = None;
-        for rule in self.rules.iter() {
+        for rule in &self.rules {
             let result = rule.try_apply(self.cursor);
             if best_match.is_none() {
                 best_match = Some(result);
@@ -70,7 +76,7 @@ impl<'a, I: Input, K: Debug + Copy> Iterator for Lexer<'a, I, K> {
                     Some(RuleResult::Applied(_, best_cursor))
                         if result_cursor.offset() > best_cursor.offset() =>
                     {
-                        best_match = Some(result)
+                        best_match = Some(result);
                     }
                     _ => {}
                 },
@@ -78,7 +84,7 @@ impl<'a, I: Input, K: Debug + Copy> Iterator for Lexer<'a, I, K> {
                     Some(RuleResult::Failed(_, best_cursor))
                         if result_cursor.offset() > best_cursor.offset() =>
                     {
-                        best_match = Some(result)
+                        best_match = Some(result);
                     }
                     _ => {}
                 },
@@ -121,7 +127,8 @@ pub struct LexerBuilder<I: Input, K: Copy> {
 }
 
 impl<I: Input, K: Copy> LexerBuilder<I, K> {
-    pub fn new() -> Self {
+    #[must_use]
+    pub const fn new() -> Self {
         Self {
             rules: Vec::new(),
             recovery: Recovery::ConsumeUntilError,
@@ -129,6 +136,7 @@ impl<I: Input, K: Copy> LexerBuilder<I, K> {
     }
 
     /// Adds a rule with the given name to the set of existing rules.
+    #[must_use]
     pub fn rule<M>(mut self, name: impl Into<String>, mut rule: Rule<M, K>) -> Self
     where
         M: Matcher<I> + 'static,
@@ -139,13 +147,20 @@ impl<I: Input, K: Copy> LexerBuilder<I, K> {
     }
 
     /// Let's the user override the default recovery strategy.
-    pub fn recovery(mut self, recovery: Recovery) -> Self {
+    #[must_use]
+    pub const fn recovery(mut self, recovery: Recovery) -> Self {
         self.recovery = recovery;
         self
     }
 
     /// Assembles the collected rules together with a given input into a lexer.
-    pub fn build<'a>(self, input: &'a I) -> Lexer<'a, I, K> {
+    pub fn build(self, input: &I) -> Lexer<'_, I, K> {
         Lexer::new(self.rules, Cursor::new(input, 0), self.recovery)
+    }
+}
+
+impl<I: Input, K: Copy> Default for LexerBuilder<I, K> {
+    fn default() -> Self {
+        Self::new()
     }
 }

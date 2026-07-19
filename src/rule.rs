@@ -40,7 +40,7 @@ pub enum RuleResult<'a, I: Input, K: Copy> {
 }
 
 impl<M, K: Copy> Rule<M, K> {
-    pub fn new(matcher: M, action: Action<K>) -> Self {
+    pub const fn new(matcher: M, action: Action<K>) -> Self {
         Self {
             matcher,
             action,

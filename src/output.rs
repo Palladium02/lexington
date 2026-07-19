@@ -16,15 +16,18 @@ pub struct Span {
 }
 
 impl Span {
-    pub fn new(start: usize, end: usize) -> Self {
+    #[must_use]
+    pub const fn new(start: usize, end: usize) -> Self {
         Self { start, end }
     }
 
-    pub fn start(&self) -> usize {
+    #[must_use]
+    pub const fn start(&self) -> usize {
         self.start
     }
 
-    pub fn end(&self) -> usize {
+    #[must_use]
+    pub const fn end(&self) -> usize {
         self.end
     }
 }
@@ -41,15 +44,18 @@ pub struct Token<K: Debug> {
 }
 
 impl<K: Debug + Copy> Token<K> {
-    pub fn new(kind: K, span: Span) -> Self {
+    #[must_use]
+    pub const fn new(kind: K, span: Span) -> Self {
         Self { kind, span }
     }
 
-    pub fn kind(&self) -> K {
+    #[must_use]
+    pub const fn kind(&self) -> K {
         self.kind
     }
 
-    pub fn span(&self) -> Span {
+    #[must_use]
+    pub const fn span(&self) -> Span {
         self.span
     }
 }

@@ -14,11 +14,12 @@ pub struct Cursor<'a, I: Input> {
 }
 
 impl<'a, I: Input> Cursor<'a, I> {
-    pub fn new(input: &'a I, offset: usize) -> Self {
+    pub const fn new(input: &'a I, offset: usize) -> Self {
         Self { input, offset }
     }
 
     /// Returns the symbol at the current position without advancing.
+    #[must_use]
     pub fn peek(&self) -> Option<I::Symbol> {
         let (symbol, _) = self.input.read(self.offset)?;
         Some(symbol)
@@ -32,11 +33,13 @@ impl<'a, I: Input> Cursor<'a, I> {
     }
 
     /// Returns the current offset.
-    pub fn offset(&self) -> usize {
+    #[must_use]
+    pub const fn offset(&self) -> usize {
         self.offset
     }
 
     /// Checks if the cursor points to the end of the underlying input.
+    #[must_use]
     pub fn eof(&self) -> bool {
         self.offset >= self.input.len()
     }

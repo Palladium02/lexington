@@ -26,13 +26,17 @@ pub trait Input: Copy {
     fn read(&self, offset: usize) -> Option<(Self::Symbol, usize)>;
 
     fn len(&self) -> usize;
+
+    fn is_empty(&self) -> bool {
+        self.len() == 0
+    }
 }
 
 /// A convinience implementation of the input trait for string slices.
 #[derive(Clone, Copy)]
 pub struct Utf8<'a>(pub &'a str);
 
-impl<'a> Input for Utf8<'a> {
+impl Input for Utf8<'_> {
     type Symbol = char;
 
     fn read(&self, offset: usize) -> Option<(Self::Symbol, usize)> {

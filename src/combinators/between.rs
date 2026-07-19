@@ -12,7 +12,7 @@ pub struct Between<M, R> {
 }
 
 impl<M, R> Between<M, R> {
-    pub fn new(matcher: M, bounds: R) -> Self {
+    pub const fn new(matcher: M, bounds: R) -> Self {
         Self { matcher, bounds }
     }
 }
@@ -24,8 +24,7 @@ where
 {
     fn try_match<'a>(&self, cursor: Cursor<'a, I>) -> MatchResult<'a, I> {
         let min = match self.bounds.start_bound() {
-            Bound::Included(&n) => n,
-            Bound::Excluded(&n) => n,
+            Bound::Included(&n) | Bound::Excluded(&n) => n,
             Bound::Unbounded => 0,
         };
 
@@ -54,16 +53,13 @@ where
                     // cursor = new_cursor;
                     break;
                 }
-            };
+            }
         }
 
         if matches < min {
             return MatchResult::Failed(
                 cursor,
-                format!(
-                    "Expected to match at least {} times, matched {} times instead",
-                    min, matches
-                ),
+                format!("Expected to match at least {min} times, matched {matches} times instead"),
             );
         }
 

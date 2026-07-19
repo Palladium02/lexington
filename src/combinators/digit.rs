@@ -4,6 +4,7 @@ use crate::{
     matcher::{Matcher, MatcherBase},
 };
 
+#[must_use]
 pub fn digit<I>() -> impl Matcher<I> + MatcherBase + Sized + 'static
 where
     I: Input<Symbol = char> + Sized + 'static,

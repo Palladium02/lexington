@@ -10,7 +10,7 @@ pub struct Or<A, B> {
 }
 
 impl<A, B> Or<A, B> {
-    pub fn new(left: A, right: B) -> Self {
+    pub const fn new(left: A, right: B) -> Self {
         Self { left, right }
     }
 }

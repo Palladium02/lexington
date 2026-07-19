@@ -74,9 +74,9 @@ pub trait MatcherExt: Sized + 'static {
     fn skip<K: Copy>(self) -> Rule<Self, K>;
 }
 
-impl<M: MatcherBase> MatcherExt for M
+impl<M> MatcherExt for M
 where
-    M: Sized + 'static,
+    M: MatcherBase + Sized + 'static,
 {
     fn kind<K: Copy>(self, kind: K) -> Rule<Self, K> {
         Rule::new(self, Action::Emit(kind))
