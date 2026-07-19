@@ -1,3 +1,5 @@
+use std::ops::{Range, RangeFrom, RangeInclusive};
+
 use crate::{
     combinators::{between::Between, or::Or, then::Then},
     cursor::Cursor,
@@ -42,6 +44,20 @@ pub trait MatcherExt: Sized + 'static {
     /// Creates a matcher that tests whether two matchers succeeds. A match is chosen in a short-circuiting manner.
     fn or<A>(self, other: A) -> Or<Self, A> {
         Or::new(self, other)
+    }
+
+    /// Creates a matcher that succeeds with an arbitrary number of successful matches. Matches are computed greedily.
+    fn many(self) -> Between<Self, RangeFrom<usize>> {
+        Between::new(self, 0usize..)
+    }
+
+    /// Create a matcher that succeeds if the underlying matcher succeeds at least once. Matches are computed greedily.
+    fn many1(self) -> Between<Self, RangeFrom<usize>> {
+        Between::new(self, 1usize..)
+    }
+
+    fn optional(self) -> Between<Self, RangeInclusive<usize>> {
+        Between::new(self, 0usize..=1usize)
     }
 
     /// Creates a matcher which is executed multiple times to satisfy the given range bounds. Matches are computed greedily.
