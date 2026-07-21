@@ -1,7 +1,7 @@
 use crate::{
     cursor::Cursor,
     input::Input,
-    matcher::{MatchResult, Matcher, MatcherBase},
+    matcher::{MatchResult, Matcher, MatcherExt},
 };
 
 pub struct Or<A, B> {
@@ -33,4 +33,4 @@ impl<I: Input, A: Matcher<I>, B: Matcher<I>> Matcher<I> for Or<A, B> {
     }
 }
 
-impl<A, B> MatcherBase for Or<A, B> {}
+impl<A, B> MatcherExt for Or<A, B> {}

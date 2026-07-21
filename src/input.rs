@@ -8,7 +8,7 @@ use std::fmt::Display;
 ///
 /// Implementations may represent symbols using different storage formats,
 /// such as UTF-8 strings or raw bytes.
-pub trait Input: Copy {
+pub trait Input {
     /// The logical unit consumed by matchers
     ///
     /// For example:

@@ -3,7 +3,7 @@ use std::ops::{Bound, RangeBounds};
 use crate::{
     cursor::Cursor,
     input::Input,
-    matcher::{MatchResult, Matcher, MatcherBase},
+    matcher::{MatchResult, Matcher, MatcherExt},
 };
 
 pub struct Between<M, R> {
@@ -17,7 +17,7 @@ impl<M, R> Between<M, R> {
     }
 }
 
-impl<I: Input, M, R> Matcher<I> for Between<M, R>
+impl<I: Input, M, R: Clone> Matcher<I> for Between<M, R>
 where
     M: Matcher<I>,
     R: RangeBounds<usize>,
@@ -49,8 +49,7 @@ where
                     matches += 1;
                     cursor = new_cursor;
                 }
-                MatchResult::Failed(_new_cursor, _) => {
-                    // cursor = new_cursor;
+                MatchResult::Failed(_, _) => {
                     break;
                 }
             }
@@ -67,4 +66,4 @@ where
     }
 }
 
-impl<M, R> MatcherBase for Between<M, R> {}
+impl<M, R> MatcherExt for Between<M, R> {}

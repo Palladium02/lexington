@@ -1,13 +1,9 @@
-use crate::{
-    combinators::predicate::predicate,
-    input::Input,
-    matcher::{Matcher, MatcherBase},
-};
+use crate::{combinators::predicate::predicate, input::Input, matcher::Matcher};
 
 #[must_use]
-pub fn digit<I>() -> impl Matcher<I> + MatcherBase + Sized + 'static
+pub fn digit<I>() -> impl Matcher<I>
 where
-    I: Input<Symbol = char> + Sized + 'static,
+    I: Input<Symbol = char>,
 {
     predicate(|symbol: char| symbol.is_ascii_digit())
 }

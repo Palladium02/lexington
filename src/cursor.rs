@@ -7,11 +7,18 @@ use crate::input::Input;
 /// successfully consume input.
 ///
 /// This allows matchers to compose without requiring mutable shared state.
-#[derive(Clone, Copy)]
 pub struct Cursor<'a, I: Input> {
     input: &'a I,
     offset: usize,
 }
+
+impl<'a, I: Input> Clone for Cursor<'a, I> {
+    fn clone(&self) -> Self {
+        *self
+    }
+}
+
+impl<'a, I: Input> Copy for Cursor<'a, I> {}
 
 impl<'a, I: Input> Cursor<'a, I> {
     pub const fn new(input: &'a I, offset: usize) -> Self {

@@ -25,7 +25,7 @@ pub enum MatchResult<'a, I: Input> {
 ///
 /// Matchers are the building blocks of lexer rules. They describe *what input
 /// to recognize* but do not decide what token should be produced.
-pub trait Matcher<I: Input> {
+pub trait Matcher<I: Input>: MatcherExt {
     /// Attempts to match input starting at the provided cursor.
     ///
     /// The cursor is passed by value, allowing matchers to freely consume it
@@ -33,56 +33,69 @@ pub trait Matcher<I: Input> {
     fn try_match<'a>(&self, cursor: Cursor<'a, I>) -> MatchResult<'a, I>;
 }
 
-pub trait MatcherBase {}
-
-pub trait MatcherExt: Sized + 'static {
+pub trait MatcherExt {
     /// Creates a matcher that succeeds if the two underlying matchers succeed in order.
-    fn then<A>(self, other: A) -> Then<Self, A> {
+    fn then<A>(self, other: A) -> Then<Self, A>
+    where
+        Self: Sized,
+    {
         Then::new(self, other)
     }
 
     /// Creates a matcher that tests whether two matchers succeeds. A match is chosen in a short-circuiting manner.
-    fn or<A>(self, other: A) -> Or<Self, A> {
+    fn or<A>(self, other: A) -> Or<Self, A>
+    where
+        Self: Sized,
+    {
         Or::new(self, other)
     }
 
     /// Creates a matcher that succeeds with an arbitrary number of successful matches. Matches are computed greedily.
-    fn many(self) -> Between<Self, RangeFrom<usize>> {
+    fn many(self) -> Between<Self, RangeFrom<usize>>
+    where
+        Self: Sized,
+    {
         Between::new(self, 0usize..)
     }
 
     /// Create a matcher that succeeds if the underlying matcher succeeds at least once. Matches are computed greedily.
-    fn many1(self) -> Between<Self, RangeFrom<usize>> {
+    fn many1(self) -> Between<Self, RangeFrom<usize>>
+    where
+        Self: Sized,
+    {
         Between::new(self, 1usize..)
     }
 
-    fn optional(self) -> Between<Self, RangeInclusive<usize>> {
+    fn optional(self) -> Between<Self, RangeInclusive<usize>>
+    where
+        Self: Sized,
+    {
         Between::new(self, 0usize..=1usize)
     }
 
     /// Creates a matcher which is executed multiple times to satisfy the given range bounds. Matches are computed greedily.
-    fn between<A>(self, bounds: A) -> Between<Self, A> {
+    fn between<A>(self, bounds: A) -> Between<Self, A>
+    where
+        Self: Sized,
+    {
         Between::new(self, bounds)
     }
 
     /// Captures the matcher into a rule that when chosen by the lexer will result in a token
     /// being produced.
-    fn kind<K: Copy>(self, kind: K) -> Rule<Self, K>;
-
-    /// Captures the matcher into a rule that when chose by the lexer will result in no token being
-    /// produced for this rule.
-    fn skip<K: Copy>(self) -> Rule<Self, K>;
-}
-
-impl<M> MatcherExt for M
-where
-    M: MatcherBase + Sized + 'static,
-{
-    fn kind<K: Copy>(self, kind: K) -> Rule<Self, K> {
+    fn kind<K: Copy>(self, kind: K) -> Rule<Self, K>
+    where
+        Self: Sized,
+    {
         Rule::new(self, Action::Emit(kind))
     }
 
-    fn skip<K: Copy>(self) -> Rule<Self, K> {
+    /// Captures the matcher into a rule that when chose by the lexer will result in no token being
+    /// produced for this rule.
+    fn skip<K: Copy>(self) -> Rule<Self, K>
+    where
+        Self: Sized,
+    {
         Rule::new(self, Action::Skip)
     }
 }

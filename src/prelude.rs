@@ -2,6 +2,7 @@ pub use crate::combinators::{
     ascii::{ascii_lower, ascii_upper},
     digit::digit,
     just::{IntoSymbols, Just, just},
+    one_of::{OneOf, one_of},
     symbol::{Symbol, symbol},
     then::Then,
 };

@@ -1,7 +1,7 @@
 use crate::{
     cursor::Cursor,
     input::Input,
-    matcher::{self, MatchResult, Matcher, MatcherBase},
+    matcher::{self, MatchResult, Matcher, MatcherExt},
 };
 
 pub struct Predicate<P>(P);
@@ -12,7 +12,7 @@ impl<P> Predicate<P> {
     }
 }
 
-impl<I: Input, P: Fn(I::Symbol) -> bool> Matcher<I> for Predicate<P> {
+impl<I: Input, P: Fn(I::Symbol) -> bool + Clone> Matcher<I> for Predicate<P> {
     fn try_match<'a>(&self, mut cursor: Cursor<'a, I>) -> matcher::MatchResult<'a, I> {
         match cursor.peek() {
             Some(symbol) if self.0(symbol) => {
@@ -31,7 +31,7 @@ impl<I: Input, P: Fn(I::Symbol) -> bool> Matcher<I> for Predicate<P> {
     }
 }
 
-impl<P> MatcherBase for Predicate<P> {}
+impl<P> MatcherExt for Predicate<P> {}
 
 pub const fn predicate<P>(predicate: P) -> Predicate<P> {
     Predicate(predicate)
