@@ -2,6 +2,7 @@ pub mod ascii;
 pub mod between;
 pub mod digit;
 pub mod just;
+pub mod none_of;
 pub mod one_of;
 pub mod or;
 pub mod predicate;

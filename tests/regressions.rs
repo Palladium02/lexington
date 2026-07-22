@@ -17,7 +17,7 @@ fn between_does_not_consume_failed_match() {
             "identifier",
             ascii_lower().between(1..).kind(Kind::Identifier),
         )
-        .rule("integer", digit().between(1..).kind(Kind::Int))
+        .rule("integer", ascii_digit().between(1..).kind(Kind::Int))
         .rule("equals", symbol('=').kind(Kind::Eq))
         .rule("semicolon", symbol(';').kind(Kind::Semicolon))
         .rule("space", symbol(' ').skip())

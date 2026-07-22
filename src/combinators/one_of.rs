@@ -8,7 +8,7 @@ pub struct OneOf<S> {
     symbols: S,
 }
 
-impl<I, S: Clone> Matcher<I> for OneOf<S>
+impl<I, S> Matcher<I> for OneOf<S>
 where
     I: Input,
     S: AsRef<[I::Symbol]>,
