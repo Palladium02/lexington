@@ -46,7 +46,7 @@ impl<'a, I: Input, K: Copy> Lexer<'a, I, K> {
         }
     }
 
-    /// Returns an builder instance.
+    /// Returns a builder instance.
     #[must_use]
     pub const fn builder() -> LexerBuilder<I, K> {
         LexerBuilder::new()
@@ -107,7 +107,6 @@ impl<I: Input, K: Debug + Copy> Iterator for Lexer<'_, I, K> {
                     Recovery::ConsumeUntilError => self.cursor = cursor,
                     Recovery::ConsumeOneRestart => self.cursor.advance(),
                 }
-                // self.cursor = cursor;
                 Some(Event::Error(
                     Span::new(start.offset(), self.cursor.offset()),
                     message,

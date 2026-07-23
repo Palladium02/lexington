@@ -58,7 +58,7 @@ pub trait MatcherExt {
         Between::new(self, 0usize..)
     }
 
-    /// Create a matcher that succeeds if the underlying matcher succeeds at least once. Matches are computed greedily.
+    /// Creates a matcher that succeeds if the underlying matcher succeeds at least once. Matches are computed greedily.
     fn many1(self) -> Between<Self, RangeFrom<usize>>
     where
         Self: Sized,
@@ -66,6 +66,7 @@ pub trait MatcherExt {
         Between::new(self, 1usize..)
     }
 
+    /// Creates a matcher that succeeds independently of the success of the underlying matcher. Matches are computed greedily.
     fn optional(self) -> Between<Self, RangeInclusive<usize>>
     where
         Self: Sized,
