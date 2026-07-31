@@ -7,6 +7,7 @@ pub use crate::combinators::{
     },
     digit::digit,
     just::{IntoSymbols, Just, just},
+    none_of::{NoneOf, none_of},
     one_of::{OneOf, one_of},
     symbol::{Symbol, symbol},
     then::Then,

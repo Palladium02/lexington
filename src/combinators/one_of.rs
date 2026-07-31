@@ -31,6 +31,6 @@ where
 
 impl<S> MatcherExt for OneOf<S> {}
 
-pub fn one_of<I: Input, S: AsRef<[I::Symbol]>>(symbols: S) -> OneOf<S> {
+pub fn one_of<S>(symbols: S) -> OneOf<S> {
     OneOf { symbols }
 }

@@ -26,3 +26,7 @@ where
 }
 
 impl<S> MatcherExt for NoneOf<S> {}
+
+pub fn none_of<S>(symbols: S) -> NoneOf<S> {
+    NoneOf(symbols)
+}
