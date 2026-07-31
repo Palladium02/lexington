@@ -1,5 +1,7 @@
 use std::fmt::Display;
 
+use crate::source_map::Utf8SourceMap;
+
 /// A source of symbols that can be consumed by a lexer.
 ///
 /// `Input` abstracts over the representation of the source data. The lexer
@@ -35,6 +37,12 @@ pub trait Input {
 /// A convinience implementation of the input trait for string slices.
 #[derive(Clone, Copy)]
 pub struct Utf8<'a>(pub &'a str);
+
+impl<'a> Utf8<'a> {
+    pub fn source_map(&self) -> Utf8SourceMap {
+        Utf8SourceMap::new(&self)
+    }
+}
 
 impl Input for Utf8<'_> {
     type Symbol = char;

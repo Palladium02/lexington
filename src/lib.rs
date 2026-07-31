@@ -41,3 +41,4 @@ pub mod output;
 pub mod prelude;
 pub mod recovery;
 pub mod rule;
+pub mod source_map;
