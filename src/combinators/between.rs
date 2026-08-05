@@ -17,7 +17,7 @@ impl<M, R> Between<M, R> {
     }
 }
 
-impl<I: Input, M, R: Clone> Matcher<I> for Between<M, R>
+impl<I: Input, M, R> Matcher<I> for Between<M, R>
 where
     M: Matcher<I>,
     R: RangeBounds<usize>,
