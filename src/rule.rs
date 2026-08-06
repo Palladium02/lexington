@@ -1,3 +1,5 @@
+use std::marker::PhantomData;
+
 use crate::{
     cursor::Cursor,
     input::Input,
@@ -23,10 +25,11 @@ pub enum Action<K: Copy> {
 /// - a matcher deciding whether input matches
 /// - an action describing what happens after a successful match
 /// - a name for better error reporting
-pub struct Rule<M, K: Copy> {
+pub struct Rule<'a, M, K: Copy> {
     matcher: M,
     action: Action<K>,
     name: String,
+    _marker: PhantomData<&'a ()>,
 }
 
 /// The result of attempting to apply a rule to an input.
@@ -39,12 +42,13 @@ pub enum RuleResult<'a, I: Input, K: Copy> {
     Failed(String, Cursor<'a, I>), // Failed.0 is the reason bubbled up from MatchResult::Failed extended with "{Rule.name}: "
 }
 
-impl<M, K: Copy> Rule<M, K> {
+impl<'a, M, K: Copy> Rule<'a, M, K> {
     pub const fn new(matcher: M, action: Action<K>) -> Self {
         Self {
             matcher,
             action,
             name: String::new(),
+            _marker: PhantomData,
         }
     }
 
@@ -53,11 +57,11 @@ impl<M, K: Copy> Rule<M, K> {
     }
 }
 
-impl<M, K: Copy> Rule<M, K> {
-    pub fn erase<I>(self) -> ErasedRule<I, K>
+impl<'a, M, K: Copy> Rule<'a, M, K> {
+    pub fn erase<I>(self) -> ErasedRule<'a, I, K>
     where
         I: Input,
-        M: Matcher<I> + 'static,
+        M: Matcher<I> + 'a,
     {
         ErasedRule {
             matcher: Box::new(self.matcher),
@@ -67,14 +71,14 @@ impl<M, K: Copy> Rule<M, K> {
     }
 }
 
-pub struct ErasedRule<I, K: Copy> {
-    matcher: Box<dyn Matcher<I>>,
+pub struct ErasedRule<'a, I, K: Copy> {
+    matcher: Box<dyn Matcher<I> + 'a>,
     action: Action<K>,
     name: String,
 }
 
-impl<I: Input, K: Copy> ErasedRule<I, K> {
-    pub fn try_apply<'a>(&self, cursor: Cursor<'a, I>) -> RuleResult<'a, I, K> {
+impl<'a, I: Input, K: Copy> ErasedRule<'a, I, K> {
+    pub fn try_apply<'b>(&self, cursor: Cursor<'b, I>) -> RuleResult<'b, I, K> {
         match self.matcher.try_match(cursor) {
             MatchResult::Matched(cursor) => RuleResult::Applied(self.action, cursor),
             MatchResult::Failed(cursor, message) => {

@@ -28,14 +28,14 @@ pub enum Event<K: Debug> {
 /// lexer selects the best match according to its configured selection strategy.
 pub struct Lexer<'a, I: Input, K: Copy> {
     cursor: Cursor<'a, I>,
-    rules: Vec<ErasedRule<I, K>>,
+    rules: Vec<ErasedRule<'a, I, K>>,
     recovery: Recovery,
 }
 
 impl<'a, I: Input, K: Copy> Lexer<'a, I, K> {
     #[must_use]
     pub const fn new(
-        rules: Vec<ErasedRule<I, K>>,
+        rules: Vec<ErasedRule<'a, I, K>>,
         cursor: Cursor<'a, I>,
         recovery: Recovery,
     ) -> Self {
@@ -48,7 +48,7 @@ impl<'a, I: Input, K: Copy> Lexer<'a, I, K> {
 
     /// Returns a builder instance.
     #[must_use]
-    pub const fn builder() -> LexerBuilder<I, K> {
+    pub const fn builder() -> LexerBuilder<'a, I, K> {
         LexerBuilder::new()
     }
 }
@@ -120,12 +120,12 @@ impl<I: Input, K: Debug + Copy> Iterator for Lexer<'_, I, K> {
 ///
 /// The builder provides a fluent API for registering rules before creating
 /// the final lexer instance.
-pub struct LexerBuilder<I: Input, K: Copy> {
-    rules: Vec<ErasedRule<I, K>>,
+pub struct LexerBuilder<'a, I: Input, K: Copy> {
+    rules: Vec<ErasedRule<'a, I, K>>,
     recovery: Recovery,
 }
 
-impl<I: Input, K: Copy> LexerBuilder<I, K> {
+impl<'a, I: Input, K: Copy> LexerBuilder<'a, I, K> {
     #[must_use]
     pub const fn new() -> Self {
         Self {
@@ -136,9 +136,9 @@ impl<I: Input, K: Copy> LexerBuilder<I, K> {
 
     /// Adds a rule with the given name to the set of existing rules.
     #[must_use]
-    pub fn rule<M>(mut self, name: impl Into<String>, mut rule: Rule<M, K>) -> Self
+    pub fn rule<M>(mut self, name: impl Into<String>, mut rule: Rule<'a, M, K>) -> Self
     where
-        M: Matcher<I> + 'static,
+        M: Matcher<I> + 'a,
     {
         rule.set_name(name);
         self.rules.push(rule.erase());
@@ -153,12 +153,12 @@ impl<I: Input, K: Copy> LexerBuilder<I, K> {
     }
 
     /// Assembles the collected rules together with a given input into a lexer.
-    pub fn build(self, input: &I) -> Lexer<'_, I, K> {
+    pub fn build(self, input: &'a I) -> Lexer<'a, I, K> {
         Lexer::new(self.rules, Cursor::new(input, 0), self.recovery)
     }
 }
 
-impl<I: Input, K: Copy> Default for LexerBuilder<I, K> {
+impl<'a, I: Input, K: Copy> Default for LexerBuilder<'a, I, K> {
     fn default() -> Self {
         Self::new()
     }

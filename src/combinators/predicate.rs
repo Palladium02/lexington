@@ -12,7 +12,7 @@ impl<P> Predicate<P> {
     }
 }
 
-impl<I: Input, P: Fn(I::Symbol) -> bool + Clone> Matcher<I> for Predicate<P> {
+impl<I: Input, P: Fn(I::Symbol) -> bool> Matcher<I> for Predicate<P> {
     fn try_match<'a>(&self, mut cursor: Cursor<'a, I>) -> matcher::MatchResult<'a, I> {
         match cursor.peek() {
             Some(symbol) if self.0(symbol) => {

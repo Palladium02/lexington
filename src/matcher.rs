@@ -84,7 +84,7 @@ pub trait MatcherExt {
 
     /// Captures the matcher into a rule that when chosen by the lexer will result in a token
     /// being produced.
-    fn kind<K: Copy>(self, kind: K) -> Rule<Self, K>
+    fn kind<'a, K: Copy>(self, kind: K) -> Rule<'a, Self, K>
     where
         Self: Sized,
     {
@@ -93,7 +93,7 @@ pub trait MatcherExt {
 
     /// Captures the matcher into a rule that when chose by the lexer will result in no token being
     /// produced for this rule.
-    fn skip<K: Copy>(self) -> Rule<Self, K>
+    fn skip<'a, K: Copy>(self) -> Rule<'a, Self, K>
     where
         Self: Sized,
     {
